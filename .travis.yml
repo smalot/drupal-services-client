@@ -67,6 +67,7 @@ script:
   - cd $TRAVIS_BUILD_DIR/../drupal
   - drush -v site-install minimal --db-url=mysql://root:@localhost/drupal --yes --account-pass=admin
   - wget -O- http://localhost
+  
 #  - phpenv rehash
 #
 #  # Enable Simpletest and run Simpletest tests.
