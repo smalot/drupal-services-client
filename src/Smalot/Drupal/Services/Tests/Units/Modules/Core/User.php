@@ -75,6 +75,10 @@ class User extends atoum\test
         $this->assert->array($users);
         $this->assert->array($users[0])->hasKeys(array('uid', 'name', 'mail', 'created'));
 
+        // Logout.
+        $result = $module->logout()->execute();
+        $this->assert->array($result)->isEqualTo(array(array(true)));
+
         // Register user.
         $this->assert->exception(
           function () use ($module) {
@@ -91,9 +95,5 @@ class User extends atoum\test
         );
         $result   = $module->register($user)->execute();
         $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
-
-        // Logout.
-        $result = $module->logout()->execute();
-        $this->assert->array($result)->isEqualTo(array(array(true)));
     }
 }
