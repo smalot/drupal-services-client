@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal;
+namespace Smalot\Drupal\Services;
 
 /**
  * Interface MultiCallQueueInterface
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 interface MultiCallQueueInterface extends \ArrayAccess, \Iterator, \Countable
 {

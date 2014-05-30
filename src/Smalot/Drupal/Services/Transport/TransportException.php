@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal\Transport;
+namespace Smalot\Drupal\Services\Transport;
 
 /**
  * Class TransportException
  *
- * @package Smalot\Drupal\Transport
+ * @package Smalot\Drupal\Services\Transport
  */
 class TransportException extends \Exception
 {

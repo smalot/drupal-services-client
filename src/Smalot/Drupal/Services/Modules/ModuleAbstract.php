@@ -1,15 +1,15 @@
 <?php
 
-namespace Smalot\Drupal\Modules;
+namespace Smalot\Drupal\Services\Modules;
 
-use Smalot\Drupal\Action;
-use Smalot\Drupal\ActionInterface;
-use Smalot\Drupal\RemoteAdapterInterface;
+use Smalot\Drupal\Services\Action;
+use Smalot\Drupal\Services\ActionInterface;
+use Smalot\Drupal\Services\RemoteAdapterInterface;
 
 /**
  * Class ModuleAbstract
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 abstract class ModuleAbstract
 {

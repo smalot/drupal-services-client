@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal;
+namespace Smalot\Drupal\Services;
 
 /**
  * Class RemoteAdapterException
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 class RemoteAdapterException extends \Exception
 {

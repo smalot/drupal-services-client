@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal;
+namespace Smalot\Drupal\Services;
 
 /**
  * Class Action
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 class Action implements ActionInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal;
+namespace Smalot\Drupal\Services;
 
 /**
  * Class MultiCallQueue
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 class MultiCallQueue implements MultiCallQueueInterface
 {

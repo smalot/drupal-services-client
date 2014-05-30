@@ -1,13 +1,13 @@
 <?php
 
-namespace Smalot\Drupal\Security;
+namespace Smalot\Drupal\Services\Security;
 
-use Smalot\Drupal\Transport\TransportInterface;
+use Smalot\Drupal\Services\Transport\TransportInterface;
 
 /**
  * Interface SecurityInterface
  *
- * @package Smalot\Drupal\Security
+ * @package Smalot\Drupal\Services\Security
  */
 interface SecurityInterface
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Smalot\Drupal\Transport;
+namespace Smalot\Drupal\Services\Transport;
 
-use Smalot\Drupal\Security\Session;
+use Smalot\Drupal\Services\Security\Session;
 
 /**
  * Class Rest
  *
- * @package Smalot\Drupal\Transport
+ * @package Smalot\Drupal\Services\Transport
  */
 class Rest implements TransportInterface
 {

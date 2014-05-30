@@ -1,15 +1,15 @@
 <?php
 
-namespace Smalot\Drupal;
+namespace Smalot\Drupal\Services;
 
-use Smalot\Drupal\Security\SecurityInterface;
-use Smalot\Drupal\Transport\Request;
-use Smalot\Drupal\Transport\TransportInterface;
+use Smalot\Drupal\Services\Security\SecurityInterface;
+use Smalot\Drupal\Services\Transport\Request;
+use Smalot\Drupal\Services\Transport\TransportInterface;
 
 /**
  * Class RemoteAdapter
  *
- * @package Smalot\Drupal
+ * @package Smalot\Drupal\Services
  */
 class RemoteAdapter implements RemoteAdapterInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Drupal\Transport;
+namespace Smalot\Drupal\Services\Transport;
 
 /**
  * Interface TransportInterface
  *
- * @package Smalot\Drupal\Transport
+ * @package Smalot\Drupal\Services\Transport
  */
 interface TransportInterface
 {

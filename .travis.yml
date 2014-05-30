@@ -11,6 +11,9 @@ php:
 
 env:
   - PATH=$PATH:/home/travis/.composer/vendor/bin
+  - DRUPAL_HOSTNAME="http://localhost"
+  - DRUPAL_LOGIN=admin
+  - DRUPAL_PASSWORD=admin
 
 mysql:
   database: drupal
@@ -19,7 +22,7 @@ mysql:
 
 install:
   # Install Apache.
-  - sudo apt-get install apache2 libapache2-mod-fastcgi
+  - sudo apt-get install apache2 libapache2-mod-fastcgi php5-xdebug php5-cli
 
   # Enable php-fpm.
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
@@ -46,34 +49,33 @@ install:
   - cd $TRAVIS_BUILD_DIR/../drupal
 
   # Add Coveralls.io integration.
-  - cd $TRAVIS_BUILD_DIR/../drupal
-  - composer require satooshi/php-coveralls:0.6.* --prefer-source
+#  - cd $TRAVIS_BUILD_DIR/../drupal
+#  - composer require satooshi/php-coveralls:0.6.* --prefer-source
 
   # Copy Currency into Drupal core.
-  - cp -Rv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../drupal/modules/
+#  - cp -Rv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../drupal/modules/
 
-before_script:
   # Set sendmail so drush doesn't throw an error during site install.
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
-script:
-  - wget -O- http://localhost
+before_script:
+  # Install Drupal core.
+  - cd $TRAVIS_BUILD_DIR/../drupal
+  - drush -v site-install standard --db-url=mysql://root:@localhost/drupal --yes --account-pass=admin
+  # Adding Services modules.
+  - drush -v en -y services rest_server xmlrpc_server services_oauth
+  # Adding Drupal Commerce modules.
+  - drush -v en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
+  - drush -v sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
 
+script:
   # Run PHPUnit tests and submit code coverage statistics.
 #  - cd $TRAVIS_BUILD_DIR/../drupal/core
 #  - mkdir -p build/logs
 #  - vendor/bin/phpunit -c ../modules/currency/phpunit.xml.dist --bootstrap tests/bootstrap.php --verbose --debug --coverage-clover build/logs/clover.xml || exit 1
 #  - php vendor/bin/coveralls -v -c ../modules/currency/.coveralls.yml
 
-  # Install Drupal core.
-  - cd $TRAVIS_BUILD_DIR/../drupal
-  - drush -v site-install standard --db-url=mysql://root:@localhost/drupal --yes --account-pass=admin
-  # Add Services modules.
-  - drush -v en -y services rest_server xmlrpc_server services_oauth
-  # Add Drupal Commerce modules.
-  - drush -v en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
-  - drush -v sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
-  - wget -O- http://localhost
+  - ./vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/ -ncc
 
 #  - phpenv rehash
 #

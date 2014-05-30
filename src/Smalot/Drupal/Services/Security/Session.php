@@ -1,16 +1,15 @@
 <?php
 
-namespace Smalot\Drupal\Security;
+namespace Smalot\Drupal\Services\Security;
 
-use Smalot\Drupal\Action;
-use Smalot\Drupal\Modules\Services\User;
-use Smalot\Drupal\Transport\Request;
-use Smalot\Drupal\Transport\TransportInterface;
+use Smalot\Drupal\Services\Modules\Core\User;
+use Smalot\Drupal\Services\Transport\Request;
+use Smalot\Drupal\Services\Transport\TransportInterface;
 
 /**
  * Class Session
  *
- * @package Smalot\Drupal\Security
+ * @package Smalot\Drupal\Services\Security
  */
 class Session implements SecurityInterface
 {
@@ -61,7 +60,23 @@ class Session implements SecurityInterface
         $request    = new Request($action, new Anonymous());
         $this->data = $transport->call($request);
 
+        if (!$this->data) {
+            return false;
+        }
+
         return true;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getUser()
+    {
+        if ($this->isLogged()) {
+            return $this->data['user'];
+        }
+
+        return null;
     }
 
     /**

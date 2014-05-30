@@ -1,13 +1,13 @@
 <?php
 
-namespace Smalot\Drupal\Modules\Services;
+namespace Smalot\Drupal\Services\Modules\Core;
 
-use Smalot\Drupal\Modules\ModuleAbstract;
+use Smalot\Drupal\Services\Modules\ModuleAbstract;
 
 /**
  * Class Node
  *
- * @package Smalot\Drupal\Actions\Services
+ * @package Smalot\Drupal\Services\Actions\Core
  */
 class Node extends ModuleAbstract
 {
@@ -22,7 +22,7 @@ class Node extends ModuleAbstract
     /**
      * @param $node
      *
-     * @return \Smalot\Drupal\ActionInterface
+     * @return \Smalot\Drupal\Services\ActionInterface
      */
     public function create($node)
     {
@@ -32,7 +32,7 @@ class Node extends ModuleAbstract
     /**
      * @param $node
      *
-     * @return \Smalot\Drupal\ActionInterface
+     * @return \Smalot\Drupal\Services\ActionInterface
      */
     public function update($node)
     {
@@ -44,7 +44,7 @@ class Node extends ModuleAbstract
     /**
      * @param $nid
      *
-     * @return \Smalot\Drupal\ActionInterface
+     * @return \Smalot\Drupal\Services\ActionInterface
      */
     public function retrieve($nid)
     {
@@ -54,7 +54,7 @@ class Node extends ModuleAbstract
     /**
      * @param $nid
      *
-     * @return \Smalot\Drupal\ActionInterface
+     * @return \Smalot\Drupal\Services\ActionInterface
      */
     public function delete($nid)
     {

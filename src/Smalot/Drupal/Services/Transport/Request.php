@@ -1,24 +1,24 @@
 <?php
 
-namespace Smalot\Drupal\Transport;
+namespace Smalot\Drupal\Services\Transport;
 
-use Smalot\Drupal\ActionInterface;
-use Smalot\Drupal\Security\SecurityInterface;
+use Smalot\Drupal\Services\ActionInterface;
+use Smalot\Drupal\Services\Security\SecurityInterface;
 
 /**
  * Class Request
  *
- * @package Smalot\Drupal\Transport
+ * @package Smalot\Drupal\Services\Transport
  */
 class Request implements RequestInterface
 {
     /**
-     * @var \Smalot\Drupal\ActionInterface
+     * @var \Smalot\Drupal\Services\ActionInterface
      */
     protected $action;
 
     /**
-     * @var \Smalot\Drupal\Security\SecurityInterface
+     * @var \Smalot\Drupal\Services\Security\SecurityInterface
      */
     protected $security;
 
@@ -33,7 +33,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * @return \Smalot\Drupal\ActionInterface
+     * @return \Smalot\Drupal\Services\ActionInterface
      */
     public function getAction()
     {
@@ -41,7 +41,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * @return \Smalot\Drupal\Security\SecurityInterface
+     * @return \Smalot\Drupal\Services\Security\SecurityInterface
      */
     public function getSecurity()
     {
