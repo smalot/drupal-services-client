@@ -18,6 +18,7 @@
     },
     "require-dev": {
         "atoum/atoum": "dev-master",
+        "satooshi/php-coveralls": "*",
         "lusitanian/oauth": "v0.3.0"
     },
     "autoload": {

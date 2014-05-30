@@ -14,6 +14,11 @@ use \mageekguy\atoum;
 
 $report = $script->addDefaultReport();
 
+$cloverWriter = new atoum\writers\file('./build/logs/clover.xml');
+$cloverReport = new atoum\reports\asynchronous\clover();
+$cloverReport->addWriter($cloverWriter);
+$runner->addReport($cloverReport);
+
 /*
 LOGO
 
@@ -27,8 +32,10 @@ $report->addField(new atoum\report\fields\runner\result\logo());
 /*
 CODE COVERAGE SETUP
 */
+
+
 // Please replace in next line "Project Name" by your project name and "/path/to/destination/directory" by your destination directory path for html files.
-$coverageField = new atoum\report\fields\runner\coverage\html('SmalotDrupal', 'coverage');
+$coverageField = new atoum\report\fields\runner\coverage\html('SmalotDrupal', './build/coverage');
 
 // Please replace in next line http://url/of/web/site by the root url of your code coverage web site.
 $coverageField->setRootUrl('http://localhost.local');
