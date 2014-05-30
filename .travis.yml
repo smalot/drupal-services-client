@@ -10,7 +10,7 @@ php:
 #  - 5.5
 
 env:
-  - PATH=$PATH:/home/travis/.composer/vendor/bin;DRUPAL_HOSTNAME="http://localhost";DRUPAL_LOGIN=admin;DRUPAL_PASSWORD=admin
+  - PATH=$PATH:/home/travis/.composer/vendor/bin
 
 mysql:
   database: drupal
@@ -56,6 +56,10 @@ install:
   - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
 
 before_script:
+  # Set local env.
+  - DRUPAL_HOSTNAME="http://localhost"
+  - DRUPAL_LOGIN=admin
+  - DRUPAL_PASSWORD=admin
   # Install Drupal core.
   - cd $TRAVIS_BUILD_DIR/../drupal
   - drush -v site-install standard --db-url=mysql://root:@localhost/drupal --yes --account-name=$DRUPAL_LOGIN --account-pass=$DRUPAL_PASSWORD
