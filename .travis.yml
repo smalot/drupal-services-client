@@ -30,8 +30,6 @@ install:
   - composer update --dev
 
 before_script:
-  - echo "current dir" ; pwd
-
   # Prepare build
   - mkdir --parent build/logs
   - mkdir --parent build/coverage
@@ -54,12 +52,10 @@ before_script:
   - export DRUPAL_PASSWORD=admin
 
   # start a web server on port 8080, run in the background; wait for initialization
-  - drush runserver 127.0.0.1:8080 &
+  - drush runserver 127.0.0.1:8080 >/dev/null &2>/dev/null &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
-  - curl -v "http://127.0.0.1:8080"
-  - echo "current dir" ; pwd
+#  - curl -v "http://127.0.0.1:8080"
   - cd $TRAVIS_BUILD_DIR
-  - echo "current dir" ; pwd
 
 script:
   - php vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/
