@@ -68,7 +68,7 @@ before_script:
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
-    - curl -v "http://localhost"
+  - curl -v "http://localhost"
   # Prepare atoum script
   - cd $TRAVIS_BUILD_DIR
   - mkdir --parent build/logs
