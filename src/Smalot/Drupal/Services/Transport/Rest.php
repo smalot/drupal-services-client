@@ -27,6 +27,19 @@ class Rest implements TransportInterface
     protected $errors;
 
     /**
+     * @var array
+     */
+    protected $httpCodes = array(
+      400 => 'Bad Request',
+      401 => 'Unauthorized',
+      403 => 'Forbidden',
+      404 => 'Not Found',
+      405 => 'Method Not Allowed',
+      406 => 'Not Acceptable',
+      408 => 'Request Timeout',
+    );
+
+    /**
      * @param string $url
      * @param array  $options
      */
@@ -101,12 +114,13 @@ class Rest implements TransportInterface
                 if (is_array($json) && isset($json[0])) {
                     $message = $json[0];
                 } elseif (is_array($json)) {
-                    $message = $this->getHttpCode($http_code) . ': ' . ucfirst(str_replace('_', ' ', key($json))) . '.';
+                    $message = (isset($this->httpCodes[$http_code]) ? $this->httpCodes[$http_code] : '');
+                    $message .= ': ' . ucfirst(str_replace('_', ' ', key($json))) . '.';
                 } else {
                     $message = (string) $json;
                 }
             } else {
-                $message      = 'Unknown error.';
+                $message      = (isset($this->httpCodes[$http_code]) ? $this->httpCodes[$http_code] : 'Unknown error.');
                 $this->errors = array($message);
             }
         } else {
@@ -115,34 +129,6 @@ class Rest implements TransportInterface
         }
 
         return $message;
-    }
-
-    /**
-     * @param int $http_code
-     *
-     * @return string
-     */
-    protected function getHttpCode($http_code)
-    {
-        switch ($http_code) {
-            case 400:
-                return 'Bad Request';
-            case 401:
-                return 'Unauthorized';
-            case 403:
-                return 'Forbidden';
-            case 404:
-                return 'Not Found';
-            case 405:
-                return 'Method Not Allowed';
-            case 406:
-                return 'Not Acceptable';
-
-            case 408:
-                return 'Request Timeout';
-        }
-
-        return '';
     }
 
     /**

@@ -89,7 +89,7 @@ class User extends atoum\test
           'pass' => 'user_pass',
           'mail' => $username . '@example.local',
         );
-        $result = $module->register($user)->execute();
+        $result   = $module->register($user)->execute();
         $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
 
         // Logout.
