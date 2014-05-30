@@ -50,6 +50,7 @@ before_script:
   - export DRUPAL_HOSTNAME="http://127.0.0.1:8080"
   - export DRUPAL_LOGIN=admin
   - export DRUPAL_PASSWORD=admin
+  - export COVERALLS_REPO_TOKEN="rkmKGWzq8l1Y1fArMhBj0iUxBoT7bUQvW"
 
   # start a web server on port 8080, run in the background; wait for initialization
   - drush runserver 127.0.0.1:8080 &

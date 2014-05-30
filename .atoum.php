@@ -11,57 +11,46 @@ More information on documentation:
 */
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\reports;
 
+/**
+ *This will ad the default CLI report
+ */
 $report = $script->addDefaultReport();
 
-$cloverWriter = new atoum\writers\file('./build/logs/clover.xml');
-$cloverReport = new atoum\reports\asynchronous\clover();
-$cloverReport->addWriter($cloverWriter);
-$runner->addReport($cloverReport);
-
-/*
-LOGO
-
-// This will add the atoum logo before each run.
-$report->addField(new atoum\report\fields\runner\atoum\logo());
-
-// This will add a green or red logo after each run depending on its status.
-$report->addField(new atoum\report\fields\runner\result\logo());
-*/
-
-/*
-CODE COVERAGE SETUP
-*/
-
-
-// Please replace in next line "Project Name" by your project name and "/path/to/destination/directory" by your destination directory path for html files.
 $coverageField = new atoum\report\fields\runner\coverage\html('SmalotDrupal', './build/coverage');
-
-// Please replace in next line http://url/of/web/site by the root url of your code coverage web site.
 $coverageField->setRootUrl('http://localhost.local');
-
 $report->addField($coverageField);
-/**/
 
-/*
-TEST GENERATOR SETUP
+/**
+ * Publish code coverage report on coveralls.io
+ */
+$sources = 'src';
+$token   = isset($_SERVER['COVERALLS_REPO_TOKEN']) ? $_SERVER['COVERALLS_REPO_TOKEN'] : '';
 
-$testGenerator = new atoum\test\generator();
+if ($token) {
+    $coverallsReport = new reports\asynchronous\coveralls($sources, $token);
 
-// Please replace in next line "/path/to/your/tests/units/classes/directory" by your unit test's directory.
-$testGenerator->setTestClassesDirectory('path/to/your/tests/units/classes/directory');
+    /**
+     * If you are using Travis-CI (or any other CI tool), you should customize the report
+     * https://coveralls.io/docs/api
+     * http://about.travis-ci.org/docs/user/ci-environment/#Environment-variables
+     * https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
+     */
+    $defaultFinder = $coverallsReport->getBranchFinder();
+    $coverallsReport
+      ->setBranchFinder(
+        function () use ($defaultFinder) {
+            if (($branch = getenv('TRAVIS_BRANCH')) === false) {
+                $branch = $defaultFinder();
+            }
 
-// Please replace in next line "your\project\namespace\tests\units" by your unit test's namespace.
-$testGenerator->setTestClassNamespace('your\project\namespace\tests\units');
+            return $branch;
+        }
+      )
+      ->setServiceName(getenv('TRAVIS') ? 'travis-ci' : null)
+      ->setServiceJobId(getenv('TRAVIS_JOB_ID') ? : null)
+      ->addDefaultWriter();
 
-// Please replace in next line "/path/to/your/classes/directory" by your classes directory.
-$testGenerator->setTestedClassesDirectory('path/to/your/classes/directory');
-
-// Please replace in next line "your\project\namespace" by your project namespace.
-$testGenerator->setTestedClassNamespace('your\project\namespace');
-
-// Please replace in next line "path/to/your/tests/units/runner.php" by path to your unit test's runner.
-$testGenerator->setRunnerPath('path/to/your/tests/units/runner.php');
-
-$script->getRunner()->setTestGenerator($testGenerator);
-*/
+    $runner->addReport($coverallsReport);
+}
