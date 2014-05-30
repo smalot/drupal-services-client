@@ -75,26 +75,42 @@ class User extends atoum\test
         $users = $module->index()->execute();
         $this->assert->array($users);
         $this->assert->array($users[0])->hasKeys(array('uid', 'name', 'mail', 'created'));
+    }
 
-//        // Logout.
-//        $result = $module->logout()->execute();
-//        $this->assert->array($result)->isEqualTo(array(array(true)));
-//
-//        // Register user.
-//        $this->assert->exception(
-//          function () use ($module) {
-//              $module->register(array())->execute();
-//          }
-//        )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
-//          ->hasMessage('Missing required argument account');
-//
-//        $username = $this->getUsername();
-//        $user     = array(
-//          'name' => $username,
-//          'pass' => 'user_pass',
-//          'mail' => $username . '@example.local',
-//        );
-//        $result   = $module->register($user)->execute();
-//        $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
+    public function testLogout()
+    {
+        $security      = new \Smalot\Drupal\Services\Security\Session(DRUPAL_LOGIN, DRUPAL_PASSWORD);
+        $transport     = new \Smalot\Drupal\Services\Transport\Rest(DRUPAL_HOSTNAME);
+        $remoteAdapter = new \Smalot\Drupal\Services\RemoteAdapter($security, $transport);
+        $remoteAdapter->login();
+
+        $this->assert->boolean($remoteAdapter->logout())->isEqualTo(true);
+    }
+
+    public function testRegister()
+    {
+        $security      = new \Smalot\Drupal\Services\Security\Session(DRUPAL_LOGIN, DRUPAL_PASSWORD);
+        $transport     = new \Smalot\Drupal\Services\Transport\Rest(DRUPAL_HOSTNAME);
+        $remoteAdapter = new \Smalot\Drupal\Services\RemoteAdapter($security, $transport);
+        $remoteAdapter->login();
+
+        $module = new \Smalot\Drupal\Services\Modules\Core\User($remoteAdapter);
+
+        // Register user.
+        $this->assert->exception(
+          function () use ($module) {
+              $module->register(array())->execute();
+          }
+        )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
+          ->hasMessage('Missing required argument account');
+
+        $username = $this->getUsername();
+        $user     = array(
+          'name' => $username,
+          'pass' => 'user_pass',
+          'mail' => $username . '@example.local',
+        );
+        $result   = $module->register($user)->execute();
+        $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
     }
 }
