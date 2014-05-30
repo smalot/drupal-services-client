@@ -67,7 +67,12 @@ script:
 
   # Install Drupal core.
   - cd $TRAVIS_BUILD_DIR/../drupal
-  - drush -v site-install minimal --db-url=mysql://root:@localhost/drupal --yes --account-pass=admin
+  - drush -v site-install standard --db-url=mysql://root:@localhost/drupal --yes --account-pass=admin
+  # Add Services modules.
+  - drush -v en -y services rest_server xmlrpc_server services_oauth
+  # Add Drupal Commerce modules.
+  - drush -v en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
+  - drush -v sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
   - wget -O- http://localhost
 
 #  - phpenv rehash
