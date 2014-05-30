@@ -10,7 +10,6 @@ More information on documentation:
 [fr] http://docs.atoum.org/fr/chapter3.html#Fichier-de-bootstrap
 */
 
-
 // AUTOLOADER
 
 // composer
@@ -21,3 +20,11 @@ $hostname = rtrim(isset($_ENV['DRUPAL_HOSTNAME']) ? $_ENV['DRUPAL_HOSTNAME'] : '
 define('DRUPAL_HOSTNAME', $hostname . '/rest');
 define('DRUPAL_LOGIN', isset($_ENV['DRUPAL_LOGIN']) ? $_ENV['DRUPAL_LOGIN'] : 'admin');
 define('DRUPAL_PASSWORD', isset($_ENV['DRUPAL_PASSWORD']) ? $_ENV['DRUPAL_PASSWORD'] : 'admin');
+
+var_dump(
+  array(
+    'hostname' => DRUPAL_HOSTNAME,
+    'login'    => DRUPAL_LOGIN,
+    'password' => DRUPAL_PASSWORD,
+  )
+);
