@@ -20,11 +20,3 @@ $hostname = rtrim(isset($_SERVER['DRUPAL_HOSTNAME']) ? $_SERVER['DRUPAL_HOSTNAME
 define('DRUPAL_HOSTNAME', $hostname . '/rest');
 define('DRUPAL_LOGIN', isset($_SERVER['DRUPAL_LOGIN']) ? $_SERVER['DRUPAL_LOGIN'] : 'admin');
 define('DRUPAL_PASSWORD', isset($_SERVER['DRUPAL_PASSWORD']) ? $_SERVER['DRUPAL_PASSWORD'] : 'admin');
-
-var_dump(
-  array(
-    'hostname' => DRUPAL_HOSTNAME,
-    'login'    => DRUPAL_LOGIN,
-    'password' => DRUPAL_PASSWORD,
-  )
-);
