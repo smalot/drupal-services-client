@@ -9,92 +9,63 @@ php:
   - 5.4
 #  - 5.5
 
-env:
-  - PATH=$PATH:/home/travis/.composer/vendor/bin
-
 mysql:
-  database: drupal
+  database: travis_ci_drupal
   username: root
   encoding: utf8
 
+before_install:
+  - sudo apt-get update > /dev/null
+
 install:
-  # Install Apache.
-  - sudo apt-get install apache2 libapache2-mod-fastcgi php5-xdebug php5-cli
+  # install php packages required for running a web server from drush on php 5.3
+  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
 
-  # Enable php-fpm.
-  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-  - sudo a2enmod rewrite actions fastcgi alias
-  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+  # add composer's global bin directory to the path
+  # see: https://github.com/drush-ops/drush#install---composer
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 
-  # Configure Apache virtual hosts.
-  - sudo cp -f travis/apache_virtual_hosts.txt /etc/apache2/sites-available/default
-  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)/../drupal?g" --in-place /etc/apache2/sites-available/default
-
-  # Make sure all Apache configuration takes effect.
-  - sudo service apache2 restart
-  - curl -v "http://localhost"
-
-  # Download Drush.
-  - composer global require drush/drush:dev-master --prefer-source
-  - cd /home/travis/.composer/vendor/drush/drush
-  - drush version
-
-  # Download Drupal core.
-  - cd $TRAVIS_BUILD_DIR/..
-  - git clone --branch 7.x --depth 1 http://git.drupal.org/project/drupal.git
-  - cd $TRAVIS_BUILD_DIR/../drupal
-
-  # Add Coveralls.io integration.
-#  - cd $TRAVIS_BUILD_DIR/../drupal
-#  - composer require satooshi/php-coveralls:0.6.* --prefer-source
-
-  # Copy Currency into Drupal core.
-#  - cp -Rv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../drupal/modules/
-
+  # install drush globally
+  - composer global require drush/drush:6.*
+  - composer update --dev
 
 before_script:
-  # Set sendmail so drush doesn't throw an error during site install.
-  - echo "sendmail_path='true'" >> `php --ini | grep "Loaded Configuration" | awk '{print $4}'`
+  - echo "current dir" ; pwd
 
-script:
-  # Set local env.
-  - export DRUPAL_HOSTNAME="http://localhost"
-  - export DRUPAL_LOGIN=admin
-  - export DRUPAL_PASSWORD=admin
-  # Install Drupal core.
-  - cd $TRAVIS_BUILD_DIR/../drupal
-  - drush site-install standard --db-url=mysql://root:@localhost/drupal --yes --account-name=admin --account-pass=admin
-  - curl -v "http://localhost"
+  # navigate out of project directory
+  - cd ..
+  - mkdir drupal
+  - cd drupal
+
+  # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
+  - mysql -e 'create database travis_ci_drupal'
+  - php -d sendmail_path=`which true`
+  - ~/.composer/vendor/bin/drush.php --yes core-quick-drupal --profile=standard --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drupal --account-name=admin --account-pass=admin
+
   # Adding Services modules.
   - drush en -y services rest_server #xmlrpc_server services_oauth
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
-  - curl -v "http://localhost"
-  # Prepare atoum script
+  - drush cc all
+
+  # Set local env.
+  - export DRUPAL_HOSTNAME="http://127.0.0.1:8080"
+  - export DRUPAL_LOGIN=admin
+  - export DRUPAL_PASSWORD=admin
+
+  - echo "current dir" ; pwd
   - cd $TRAVIS_BUILD_DIR
+  - echo "current dir" ; pwd
+
+  # Prepare atoum script
   - mkdir --parent build/logs
   - mkdir --parent build/coverage
-  - composer update --dev
 
-  # Run PHPUnit tests and submit code coverage statistics.
-#  - cd $TRAVIS_BUILD_DIR/../drupal/core
-#  - mkdir -p build/logs
-#  - vendor/bin/phpunit -c ../modules/currency/phpunit.xml.dist --bootstrap tests/bootstrap.php --verbose --debug --coverage-clover build/logs/clover.xml || exit 1
-#  - php vendor/bin/coveralls -v -c ../modules/currency/.coveralls.yml
+  # start a web server on port 8080, run in the background; wait for initialization
+  - drush runserver 127.0.0.1:8080 &
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
+  - curl -v "http://127.0.0.1:8080"
 
+script:
   - php vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/
-
-#  - phpenv rehash
-#
-#  # Enable Simpletest and run Simpletest tests.
-#  - drush en --yes simpletest
-#  - drush cr
-#  - cd $TRAVIS_BUILD_DIR/../drupal
-#  - php core/scripts/run-tests.sh --verbose --color --concurrency 4 --php `which php` --url http://localhost "Currency" "Currency Intl" | tee /tmp/test.txt
-#  # Simpletest does not exit with code 0 on success, so we will need to analyze
-#  # the output to ascertain whether the tests passed.
-#  - TEST_EXIT=${PIPESTATUS[0]}
-#  - TEST_SIMPLETEST=$(! egrep -i "([0-9]+ fails)|(PHP Fatal error)|([0-9]+ exceptions)" /tmp/test.txt > /dev/null)$?
-#  - if [ $TEST_EXIT -eq 0 ] && [ $TEST_SIMPLETEST -eq 0 ]; then exit 0; else exit 1; fi
