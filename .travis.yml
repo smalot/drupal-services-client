@@ -32,15 +32,16 @@ install:
 before_script:
   - echo "current dir" ; pwd
 
-  # navigate out of project directory
-  - cd ..
+  # Prepare build
+  - mkdir --parent build/logs
+  - mkdir --parent build/coverage
 
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
   - mysql -e 'create database travis_ci_drupal'
-  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes core-quick-drupal temp --profile=standard --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drupal --account-name=admin --account-pass=admin
+  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes core-quick-drupal build --profile=standard --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drupal --account-name=admin --account-pass=admin
 
   # Adding Services modules.
-  - cd temp/drupal
+  - cd build/drupal
   - drush en -y services rest_server #xmlrpc_server services_oauth
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
@@ -52,18 +53,13 @@ before_script:
   - export DRUPAL_LOGIN=admin
   - export DRUPAL_PASSWORD=admin
 
-  - echo "current dir" ; pwd
-  - cd $TRAVIS_BUILD_DIR
-  - echo "current dir" ; pwd
-
-  # Prepare atoum script
-  - mkdir --parent build/logs
-  - mkdir --parent build/coverage
-
   # start a web server on port 8080, run in the background; wait for initialization
   - drush runserver 127.0.0.1:8080 &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
   - curl -v "http://127.0.0.1:8080"
+  - echo "current dir" ; pwd
+  - cd $TRAVIS_BUILD_DIR
+  - echo "current dir" ; pwd
 
 script:
   - php vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/
