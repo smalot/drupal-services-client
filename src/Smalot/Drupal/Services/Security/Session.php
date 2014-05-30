@@ -4,6 +4,7 @@ namespace Smalot\Drupal\Services\Security;
 
 use Smalot\Drupal\Services\Modules\Core\User;
 use Smalot\Drupal\Services\Transport\Request;
+use Smalot\Drupal\Services\Transport\TransportException;
 use Smalot\Drupal\Services\Transport\TransportInterface;
 
 /**
@@ -51,7 +52,8 @@ class Session implements SecurityInterface
     /**
      * @param TransportInterface $transport
      *
-     * @return mixed
+     * @return bool
+     * @throws TransportException
      */
     public function login(TransportInterface $transport)
     {
@@ -59,10 +61,6 @@ class Session implements SecurityInterface
         $action     = $user->login($this->username, $this->password);
         $request    = new Request($action, new Anonymous());
         $this->data = $transport->call($request);
-
-        if (!$this->data) {
-            return false;
-        }
 
         return true;
     }

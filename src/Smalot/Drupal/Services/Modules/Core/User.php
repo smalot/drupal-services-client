@@ -26,7 +26,7 @@ class User extends ModuleAbstract
      */
     public function create($user)
     {
-        return $this->__createAction('create', array(), array('user' => $user));
+        return $this->__createAction('create', array(), $user);
     }
 
     /**
@@ -38,7 +38,7 @@ class User extends ModuleAbstract
     {
         $user = (array) $user;
 
-        return $this->__createAction('update', array($user['uid']), array('user' => $user));
+        return $this->__createAction('update', array($user['uid']), $user);
     }
 
     /**

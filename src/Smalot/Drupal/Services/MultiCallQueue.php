@@ -43,8 +43,8 @@ class MultiCallQueue implements MultiCallQueueInterface
     public function addAction(ActionInterface $action, $callback = null)
     {
         $this->queue[] = array(
-            'action'   => $action,
-            'callback' => $callback,
+          'action'   => $action,
+          'callback' => $callback,
         );
 
         return $this;
@@ -167,7 +167,7 @@ class MultiCallQueue implements MultiCallQueueInterface
      */
     public function offsetGet($offset)
     {
-        return $this->queue[$this->position];
+        return $this->queue[$offset];
     }
 
     /**
@@ -187,7 +187,7 @@ class MultiCallQueue implements MultiCallQueueInterface
      */
     public function offsetSet($offset, $value)
     {
-        $this->queue[$this->position] = $value;
+        $this->queue[$offset] = $value;
     }
 
     /**
@@ -204,7 +204,7 @@ class MultiCallQueue implements MultiCallQueueInterface
      */
     public function offsetUnset($offset)
     {
-        unset($this->queue[$this->position]);
+        unset($this->queue[$offset]);
     }
 
     /**

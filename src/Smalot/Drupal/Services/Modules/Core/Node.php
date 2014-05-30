@@ -37,7 +37,7 @@ class Node extends ModuleAbstract
     public function update($node)
     {
         $node = (array) $node;
-        
+
         return $this->__createAction('update', array($node['nid']), array('node' => $node));
     }
 

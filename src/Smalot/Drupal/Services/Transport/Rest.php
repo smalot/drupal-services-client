@@ -22,6 +22,11 @@ class Rest implements TransportInterface
     protected $options;
 
     /**
+     * @var array
+     */
+    protected $errors;
+
+    /**
      * @param string $url
      * @param array  $options
      */
@@ -29,6 +34,7 @@ class Rest implements TransportInterface
     {
         $this->url     = $url;
         $this->options = $options;
+        $this->errors  = array();
     }
 
     /**
@@ -65,17 +71,11 @@ class Rest implements TransportInterface
 
         // Handle response code.
         if ($http_code == 0 || $http_code >= 400) {
-            if ($http_code) {
-                if ($json = json_decode($content, true)) {
-                    $message = current($json);
-                } else {
-                    $message = $content;
-                }
-            } else {
-                $message = 'Invalid ending point.';
-            }
+            $message = $this->formatErrorMessage($http_code, $content);
 
             throw new TransportException($message, $http_code);
+        } else {
+            $this->errors = array();
         }
 
         // Decode json response.
@@ -85,13 +85,72 @@ class Rest implements TransportInterface
     }
 
     /**
-     * @param RequestInterface $request
+     * @param int    $http_code
+     * @param string $content
      *
-     * @return mixed
+     * @return string
      */
-    public function multiCall(RequestInterface $request)
+    protected function formatErrorMessage($http_code, $content)
     {
-        return $this->call($request);
+        if ($http_code) {
+            $json = @json_decode($content, true);
+
+            if ($json) {
+                $this->errors = $json;
+
+                if (is_array($json) && isset($json[0])) {
+                    $message = $json[0];
+                } elseif (is_array($json)) {
+                    $message = $this->getHttpCode($http_code) . ': ' . ucfirst(str_replace('_', ' ', key($json))) . '.';
+                } else {
+                    $message = (string) $json;
+                }
+            } else {
+                $message      = 'Unknown error.';
+                $this->errors = array($message);
+            }
+        } else {
+            $message      = 'Invalid endpoint, the request never reaches the server.';
+            $this->errors = array($message);
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param int $http_code
+     *
+     * @return string
+     */
+    protected function getHttpCode($http_code)
+    {
+        switch ($http_code) {
+            case 400:
+                return 'Bad Request';
+            case 401:
+                return 'Unauthorized';
+            case 403:
+                return 'Forbidden';
+            case 404:
+                return 'Not Found';
+            case 405:
+                return 'Method Not Allowed';
+            case 406:
+                return 'Not Acceptable';
+
+            case 408:
+                return 'Request Timeout';
+        }
+
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastError()
+    {
+        return $this->errors;
     }
 
     /**

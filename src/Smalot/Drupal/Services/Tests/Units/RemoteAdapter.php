@@ -40,7 +40,7 @@ class RemoteAdapter extends atoum\test
         $remoteAdapter = new \Smalot\Drupal\Services\RemoteAdapter($security, $transport);
 
         // Check logout before login
-        $logout        = $remoteAdapter->logout();
+        $logout = $remoteAdapter->logout();
         $this->assert->boolean($logout)->isEqualTo(false);
 
         // Check logout after login
@@ -64,17 +64,22 @@ class RemoteAdapter extends atoum\test
         $this->assert->string($user['name'])->isEqualTo(DRUPAL_LOGIN);
 
         // Check missing account with exception.
-        $action = $module->retrieve(2);
+        $action = $module->retrieve(10000);
         $this->assert->exception(
           function () use ($remoteAdapter, $action) {
               $remoteAdapter->call($action);
           }
         )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
-          ->hasMessage('There is no user with ID 2.');
+          ->hasMessage('There is no user with ID 10000.');
 
         // Check missing account without exception.
-        $action = $module->retrieve(2);
-        $user = $remoteAdapter->call($action, false);
+        $action = $module->retrieve(10000);
+        $user   = $remoteAdapter->call($action, false);
         $this->assert->boolean($user)->isEqualTo(false);
+    }
+
+    public function testMultiCall()
+    {
+
     }
 }
