@@ -23,6 +23,7 @@ class User extends atoum\test
         $security      = new \Smalot\Drupal\Services\Security\Session(DRUPAL_LOGIN, DRUPAL_PASSWORD);
         $transport     = new \Smalot\Drupal\Services\Transport\Rest(DRUPAL_HOSTNAME);
         $remoteAdapter = new \Smalot\Drupal\Services\RemoteAdapter($security, $transport);
+        $remoteAdapter->login();
 
         $module = new \Smalot\Drupal\Services\Modules\Core\User($remoteAdapter);
 
