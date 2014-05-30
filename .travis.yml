@@ -28,6 +28,7 @@ install:
   # install drush globally
   - composer global require drush/drush:6.*
   - composer update --dev
+  - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 before_script:
   # Prepare build
@@ -44,7 +45,7 @@ before_script:
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
-  - echo "ini_set('error_reporting', 'E_ALL ^ E_NOTICE');" >> sites/default/settings.php
+  - sudo echo "ini_set('error_reporting', 'E_ALL ^ E_NOTICE');" >> sites/default/settings.php
   - drush cc all
 
   # Set local env.
