@@ -44,6 +44,7 @@ before_script:
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
+  - echo "ini_set('error_reporting', 'E_ALL ^ E_NOTICE');" >> sites/default/settings.php
   - drush cc all
 
   # Set local env.
@@ -53,7 +54,7 @@ before_script:
   - export COVERALLS_REPO_TOKEN="rkmKGWzq8l1Y1fArMhBj0iUxBoT7bUQvW"
 
   # start a web server on port 8080, run in the background; wait for initialization
-  - drush runserver 127.0.0.1:8080 &
+  - drush runserver 127.0.0.1:8080 >/dev/null 2>&1 &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 #  - curl -v "http://127.0.0.1:8080"
   - cd $TRAVIS_BUILD_DIR
