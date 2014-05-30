@@ -45,7 +45,7 @@ before_script:
   # Adding Drupal Commerce modules.
   - drush en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
-  - sudo echo "ini_set('error_reporting', 'E_ALL ^ E_NOTICE');" >> sites/default/settings.php
+#  - sudo echo "ini_set('error_reporting', 'E_ALL ^ E_NOTICE');" >> sites/default/settings.php
   - drush cc all
 
   # Set local env.
