@@ -64,8 +64,10 @@ before_script:
   # Adding Drupal Commerce modules.
   - drush -v en -y commerce commerce_product commerce_cart commerce_order commerce_tax commerce_payment commerce_services
   - drush -v sql-query --file=$TRAVIS_BUILD_DIR/travis/script_services.sql
+  # Prepare atoum script
   - cd $TRAVIS_BUILD_DIR
   - mkdir coverage
+  - composer update --dev
 
 script:
   # Run PHPUnit tests and submit code coverage statistics.
@@ -74,7 +76,7 @@ script:
 #  - vendor/bin/phpunit -c ../modules/currency/phpunit.xml.dist --bootstrap tests/bootstrap.php --verbose --debug --coverage-clover build/logs/clover.xml || exit 1
 #  - php vendor/bin/coveralls -v -c ../modules/currency/.coveralls.yml
 
-  - ./vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/
+  - php ./vendor/bin/atoum -d src/Smalot/Drupal/Services/Tests/
 
 #  - phpenv rehash
 #

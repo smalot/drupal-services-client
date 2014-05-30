@@ -63,7 +63,7 @@ class RemoteAdapter extends atoum\test
         $this->assert->array($user)->hasKeys(array('uid', 'name', 'mail', 'created'));
         $this->assert->string($user['name'])->isEqualTo(DRUPAL_LOGIN);
 
-        // Check missing account.
+        // Check missing account with exception.
         $action = $module->retrieve(2);
         $this->assert->exception(
           function () use ($remoteAdapter, $action) {
@@ -71,5 +71,10 @@ class RemoteAdapter extends atoum\test
           }
         )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
           ->hasMessage('There is no user with ID 2.');
+
+        // Check missing account without exception.
+        $action = $module->retrieve(2);
+        $user = $remoteAdapter->call($action, false);
+        $this->assert->boolean($user)->isEqualTo(false);
     }
 }
