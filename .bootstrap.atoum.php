@@ -15,11 +15,11 @@ More information on documentation:
 // composer
 require __DIR__ . '/vendor/autoload.php';
 
-$hostname = rtrim(isset($_ENV['DRUPAL_HOSTNAME']) ? $_ENV['DRUPAL_HOSTNAME'] : 'http://services.local', '/');
+$hostname = rtrim(isset($_SERVER['DRUPAL_HOSTNAME']) ? $_SERVER['DRUPAL_HOSTNAME'] : 'http://services.local', '/');
 
 define('DRUPAL_HOSTNAME', $hostname . '/rest');
-define('DRUPAL_LOGIN', isset($_ENV['DRUPAL_LOGIN']) ? $_ENV['DRUPAL_LOGIN'] : 'admin');
-define('DRUPAL_PASSWORD', isset($_ENV['DRUPAL_PASSWORD']) ? $_ENV['DRUPAL_PASSWORD'] : 'admin');
+define('DRUPAL_LOGIN', isset($_SERVER['DRUPAL_LOGIN']) ? $_SERVER['DRUPAL_LOGIN'] : 'admin');
+define('DRUPAL_PASSWORD', isset($_SERVER['DRUPAL_PASSWORD']) ? $_SERVER['DRUPAL_PASSWORD'] : 'admin');
 
 var_dump(
   array(
