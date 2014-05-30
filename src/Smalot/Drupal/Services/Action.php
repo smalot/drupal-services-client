@@ -12,17 +12,32 @@ class Action implements ActionInterface
     /**
      * @var string
      */
-    protected $operation = null;
+    protected $module;
+
+    /**
+     * @var string
+     */
+    protected $operation;
 
     /**
      * @var array
      */
-    protected $arguments = null;
+    protected $parameters;
+
+    /**
+     * @var array
+     */
+    protected $data;
+
+    /**
+     * @var array
+     */
+    protected $headers;
 
     /**
      * @var RemoteAdapterInterface
      */
-    protected $remoteAdapter = null;
+    protected $remoteAdapter;
 
     /**
      * @param string                 $module
@@ -104,6 +119,6 @@ class Action implements ActionInterface
      */
     public function addToQueue(MultiCallQueueInterface $queue, $callback = null)
     {
-        $queue->addAction($this, $callback);
+        return $queue->addAction($this, $callback);
     }
 }

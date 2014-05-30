@@ -17,5 +17,5 @@ composer.phar
 
 # Custom
 .idea/*
+build/*
 test*.php
-coverage/*
