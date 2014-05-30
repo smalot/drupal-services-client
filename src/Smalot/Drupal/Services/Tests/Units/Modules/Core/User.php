@@ -76,25 +76,25 @@ class User extends atoum\test
         $this->assert->array($users);
         $this->assert->array($users[0])->hasKeys(array('uid', 'name', 'mail', 'created'));
 
-        // Logout.
-        $result = $module->logout()->execute();
-        $this->assert->array($result)->isEqualTo(array(array(true)));
-
-        // Register user.
-        $this->assert->exception(
-          function () use ($module) {
-              $module->register(array())->execute();
-          }
-        )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
-          ->hasMessage('Missing required argument account');
-
-        $username = $this->getUsername();
-        $user     = array(
-          'name' => $username,
-          'pass' => 'user_pass',
-          'mail' => $username . '@example.local',
-        );
-        $result   = $module->register($user)->execute();
-        $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
+//        // Logout.
+//        $result = $module->logout()->execute();
+//        $this->assert->array($result)->isEqualTo(array(array(true)));
+//
+//        // Register user.
+//        $this->assert->exception(
+//          function () use ($module) {
+//              $module->register(array())->execute();
+//          }
+//        )->isInstanceOf('\Smalot\Drupal\Services\Transport\TransportException')
+//          ->hasMessage('Missing required argument account');
+//
+//        $username = $this->getUsername();
+//        $user     = array(
+//          'name' => $username,
+//          'pass' => 'user_pass',
+//          'mail' => $username . '@example.local',
+//        );
+//        $result   = $module->register($user)->execute();
+//        $this->assert->array($result)->hasKeys(array('uid', 'uri'))->hasSize(2);
     }
 }
